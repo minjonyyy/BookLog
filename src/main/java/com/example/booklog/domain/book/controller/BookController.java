@@ -1,6 +1,7 @@
 package com.example.booklog.domain.book.controller;
 
 import com.example.booklog.domain.book.dto.BookSearchResponse;
+import com.example.booklog.domain.book.dto.BookDetailResponse;
 import com.example.booklog.domain.book.service.GoogleBooksService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +35,16 @@ public class BookController {
         }
 
         BookSearchResponse response = googleBooksService.searchBooks(query.trim(), page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{googleBooksId}")
+    @Operation(summary = "책 상세 정보 조회", description = "Google Books ID를 사용하여 특정 책의 상세 정보를 조회합니다.")
+    public ResponseEntity<BookDetailResponse> getBookDetail(
+            @Parameter(description = "Google Books API의 책 ID", required = true)
+            @PathVariable String googleBooksId) {
+        
+        BookDetailResponse response = googleBooksService.getBookDetail(googleBooksId);
         return ResponseEntity.ok(response);
     }
 } 

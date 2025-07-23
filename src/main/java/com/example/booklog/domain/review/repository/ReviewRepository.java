@@ -20,6 +20,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     
     boolean existsByUserIdAndBookId(Long userId, Long bookId);
     
+    Page<Review> findByBook_GoogleBooksId(String googleBooksId, Pageable pageable);
+    boolean existsByUserIdAndBook_GoogleBooksId(Long userId, String googleBooksId);
+    
     // 통계용 쿼리들
     @Query("SELECT COUNT(r) FROM Review r WHERE r.user.id = :userId")
     Long countByUserId(Long userId);

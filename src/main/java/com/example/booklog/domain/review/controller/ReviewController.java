@@ -39,7 +39,7 @@ public class ReviewController {
 
         Review review = reviewService.createReview(
                 userDetails.getUserId(),
-                request.getBookId(),
+                request.getGoogleBooksId(),
                 request.getRating(),
                 request.getOneLineReview(),
                 request.getDetailedReview()
@@ -52,10 +52,10 @@ public class ReviewController {
     /**
      * 특정 책의 리뷰 목록 조회
      */
-    @GetMapping("/book/{bookId}")
+    @GetMapping("/book/{googleBooksId}")
     @Operation(summary = "책 리뷰 목록 조회", description = "특정 책의 리뷰 목록을 조회합니다")
     public ResponseEntity<Page<ReviewResponse>> getReviewsByBook(
-            @PathVariable Long bookId,
+            @PathVariable String googleBooksId,
             @Parameter(description = "페이지 번호") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "정렬 기준") @RequestParam(defaultValue = "createdAt") String sort,
@@ -65,7 +65,7 @@ public class ReviewController {
                 Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
 
-        Page<Review> reviews = reviewService.getReviewsByBook(bookId, pageable);
+        Page<Review> reviews = reviewService.getReviewsByGoogleBooksId(googleBooksId, pageable);
         Page<ReviewResponse> response = reviews.map(ReviewResponse::from);
         
         return ResponseEntity.ok(response);

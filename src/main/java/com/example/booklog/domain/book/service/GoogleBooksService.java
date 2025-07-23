@@ -2,6 +2,7 @@ package com.example.booklog.domain.book.service;
 
 import com.example.booklog.domain.book.dto.GoogleBooksApiResponse;
 import com.example.booklog.domain.book.dto.BookSearchResponse;
+import com.example.booklog.domain.book.dto.BookDetailResponse;
 import com.example.booklog.common.exception.CustomException;
 import com.example.booklog.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -88,6 +89,69 @@ public class GoogleBooksService {
             log.error("Error searching books from Google Books API: ", e);
             throw new CustomException(ErrorCode.GOOGLE_BOOKS_API_ERROR, e.getMessage());
         }
+    }
+
+    /**
+     * Google Books API를 통한 책 상세 정보 조회
+     */
+    public BookDetailResponse getBookDetail(String googleBooksId) {
+        try {
+            String url = googleBooksApiUrl + "/volumes/" + googleBooksId;
+
+            Mono<GoogleBooksApiResponse.GoogleBookItem> responseMono = webClient.get()
+                    .uri(uriBuilder -> {
+                        uriBuilder.path(url.replace(googleBooksApiUrl, ""));
+                        if (apiKey != null && !apiKey.isEmpty()) {
+                            uriBuilder.queryParam("key", apiKey);
+                        }
+                        return uriBuilder.build();
+                    })
+                    .retrieve()
+                    .bodyToMono(GoogleBooksApiResponse.GoogleBookItem.class);
+
+            GoogleBooksApiResponse.GoogleBookItem response = responseMono.block();
+
+            if (response == null) {
+                throw new CustomException(ErrorCode.BOOK_NOT_FOUND);
+            }
+
+            return convertToBookDetailResponse(response);
+
+        } catch (Exception e) {
+            log.error("Error fetching book detail from Google Books API for id {}: ", googleBooksId, e);
+            throw new CustomException(ErrorCode.GOOGLE_BOOKS_API_ERROR, e.getMessage());
+        }
+    }
+    
+    /**
+     * GoogleBookItem을 BookDetailResponse로 변환
+     */
+    private BookDetailResponse convertToBookDetailResponse(GoogleBooksApiResponse.GoogleBookItem item) {
+        GoogleBooksApiResponse.GoogleBookItem.VolumeInfo volumeInfo = item.getVolumeInfo();
+
+        if (volumeInfo == null) {
+            // 필수 정보가 없는 경우에 대한 최소한의 응답
+            return BookDetailResponse.builder()
+                    .googleBooksId(item.getId())
+                    .title("제목 정보 없음")
+                    .authors(List.of("저자 정보 없음"))
+                    .build();
+        }
+
+        return BookDetailResponse.builder()
+                .googleBooksId(item.getId())
+                .title(volumeInfo.getTitle())
+                .authors(volumeInfo.getAuthors())
+                .publisher(volumeInfo.getPublisher())
+                .publishedDate(parsePublishedDate(volumeInfo.getPublishedDate()))
+                .description(volumeInfo.getDescription())
+                .pageCount(volumeInfo.getPageCount())
+                .thumbnailUrl(getThumbnailUrl(volumeInfo.getImageLinks()))
+                .isbn(getISBN(volumeInfo.getIndustryIdentifiers()))
+                .categories(volumeInfo.getCategories())
+                .averageRating(volumeInfo.getAverageRating())
+                .ratingsCount(volumeInfo.getRatingsCount())
+                .build();
     }
 
     /**

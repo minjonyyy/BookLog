@@ -44,7 +44,7 @@ public class UserBookController {
         BookSearchResponse.BookSummary bookSummary = BookSearchResponse.BookSummary.builder()
                 .googleBooksId(request.getGoogleBooksId())
                 .title(request.getTitle())
-                .authors(request.getAuthors() != null ? java.util.Arrays.asList(request.getAuthors()) : null)
+                .authors(request.getAuthors() != null ? java.util.Arrays.asList(request.getAuthors().split(", ")) : null)
                 .publisher(request.getPublisher())
                 .publishedDate(parsePublishedDate(request.getPublishedDate()))
                 .description(request.getDescription())
@@ -57,8 +57,8 @@ public class UserBookController {
                 userDetails.getUserId(),
                 request.getGoogleBooksId(),
                 request.getStatus(),
-                request.getCurrentPage(),
-                request.getMemo(),
+                null, // currentPage
+                null, // memo
                 bookSummary
         );
 

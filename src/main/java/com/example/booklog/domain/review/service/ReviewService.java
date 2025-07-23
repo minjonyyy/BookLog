@@ -7,7 +7,8 @@ import com.example.booklog.common.exception.CustomException;
 import com.example.booklog.common.exception.ErrorCode;
 import com.example.booklog.domain.review.repository.ReviewRepository;
 import com.example.booklog.domain.user.service.UserService;
-import com.example.booklog.domain.book.service.BookService;import lombok.RequiredArgsConstructor;
+import com.example.booklog.domain.book.service.BookService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,14 +29,14 @@ public class ReviewService {
      * 리뷰 작성
      */
     @Transactional
-    public Review createReview(Long userId, Long bookId, Integer rating, 
+    public Review createReview(Long userId, String googleBooksId, Integer rating, 
                              String oneLineReview, String detailedReview) {
         
         User user = userService.findById(userId);
-        Book book = bookService.findById(bookId);
+        Book book = bookService.findByGoogleBooksId(googleBooksId);
 
         // 중복 리뷰 체크
-        if (reviewRepository.existsByUserIdAndBookId(userId, bookId)) {
+        if (reviewRepository.existsByUserIdAndBook_GoogleBooksId(userId, googleBooksId)) {
             throw new CustomException(ErrorCode.DUPLICATE_REVIEW);
         }
 
@@ -57,11 +58,11 @@ public class ReviewService {
     /**
      * 특정 책의 리뷰 목록 조회
      */
-    public Page<Review> getReviewsByBook(Long bookId, Pageable pageable) {
+    public Page<Review> getReviewsByGoogleBooksId(String googleBooksId, Pageable pageable) {
         // 책 존재 여부 확인
-        bookService.findById(bookId);
+        bookService.findByGoogleBooksId(googleBooksId);
         
-        return reviewRepository.findByBookId(bookId, pageable);
+        return reviewRepository.findByBook_GoogleBooksId(googleBooksId, pageable);
     }
 
     /**

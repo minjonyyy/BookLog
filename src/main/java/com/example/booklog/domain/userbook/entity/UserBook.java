@@ -2,7 +2,8 @@ package com.example.booklog.domain.userbook.entity;
 
 import jakarta.persistence.*;
 import com.example.booklog.domain.user.entity.User;
-import com.example.booklog.domain.book.entity.Book;import lombok.AllArgsConstructor;
+import com.example.booklog.domain.book.entity.Book;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_books", 
-       uniqueConstraints = @UniqueConstraint(name = "unique_user_book", columnNames = {"user_id", "book_id"}))
+        uniqueConstraints = @UniqueConstraint(name = "unique_user_book", columnNames = {"user_id", "book_id"}))
 @Getter
 @Builder
 @NoArgsConstructor
@@ -59,11 +60,10 @@ public class UserBook {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // 읽기 상태 ENUM
     public enum ReadingStatus {
+        WANT_TO_READ("읽고 싶어요"),
         READING("읽는 중"),
-        COMPLETED("다 읽음"),
-        WANT_TO_READ("읽을 예정");
+        COMPLETED("다 읽음");
 
         private final String description;
 
