@@ -1,4 +1,4 @@
-import apiClient from './api';
+import apiClient from '../features/auth/services/api';
 
 export interface UserStats {
   totalBooks: number;

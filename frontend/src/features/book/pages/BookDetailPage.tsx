@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import bookService from '../services/bookService';
 import type { BookDetail } from '../types/book';
-import AddBookToLibraryModal from '../components/AddBookToLibraryModal';
-import ReviewForm from '../components/ReviewForm';
-import useAuthStore from '../store/authStore';
-import reviewService, { Review } from '../services/reviewService';
-import ReviewList from '../components/ReviewList';
-import userBookService, { ReadingStatus, UserBook } from '../services/userBookService';
+import AddBookToLibraryModal from '../../../components/common/AddBookToLibraryModal';
+import ReviewForm from '../../../components/review/ReviewForm';
+import useAuthStore from '../../auth/store/authStore';
+import reviewService, { Review } from '../../../services/reviewService';
+import ReviewList from '../../../components/review/ReviewList';
+import userBookService, { ReadingStatus, UserBook } from '../../user/services/userBookService';
 
 const BookDetailPage = () => {
   const { googleBooksId } = useParams<{ googleBooksId: string }>();

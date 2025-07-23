@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import bookService from '../services/bookService';
+import bookService from '../../features/book/services/bookService';
 
 interface BookCardProps {
   book: {

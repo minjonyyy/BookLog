@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BookDetail } from '../types/book';
-import { ReadingStatus } from '../services/userBookService';
+import { BookDetail } from '../../features/book/types/book';
+import { ReadingStatus } from '../../features/user/services/userBookService';
 import Modal from './Modal';
 
 interface AddBookToLibraryModalProps {

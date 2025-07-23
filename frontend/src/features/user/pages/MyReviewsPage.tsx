@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import reviewService from '../services/reviewService';
-import useAuthStore from '../store/authStore';
-import { useDataRefresh } from '../store/DataRefreshContext';
+import reviewService from '../../../services/reviewService';
+import useAuthStore from '../../auth/store/authStore';
+import { useDataRefresh } from '../../common/store/DataRefreshContext';
 
 interface MyReview {
   id: number;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useAuthStore from '../store/authStore';
-import bookService from '../services/bookService';
-import BookCard from '../components/BookCard';
-import type { BookSummary } from '../types/book';
+import useAuthStore from '../../auth/store/authStore';
+import bookService from '../../book/services/bookService';
+import BookCard from '../../../components/book/BookCard';
+import type { BookSummary } from '../../book/types/book';
 
 const HomePage = () => {
   const [query, setQuery] = useState('');

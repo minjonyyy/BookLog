@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Review } from '../services/reviewService';
+import { Review } from '../../services/reviewService';
 
 interface ReviewListProps {
   reviews: Review[];

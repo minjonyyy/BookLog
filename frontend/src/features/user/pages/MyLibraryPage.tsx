@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import userBookService, { UserBook, ReadingStatus } from '../services/userBookService';
-import useAuthStore from '../store/authStore';
-import BookCard from '../components/BookCard';
-import Modal from '../components/Modal';
-import ReviewForm from '../components/ReviewForm';
-import ConfirmModal from '../components/ConfirmModal';
-import reviewService from '../services/reviewService';
-import { useDataRefresh } from '../store/DataRefreshContext';
+import useAuthStore from '../../auth/store/authStore';
+import BookCard from '../../../components/book/BookCard';
+import Modal from '../../../components/common/Modal';
+import ReviewForm from '../../../components/review/ReviewForm';
+import ConfirmModal from '../../../components/common/ConfirmModal';
+import reviewService from '../../../services/reviewService';
+import { useDataRefresh } from '../../common/store/DataRefreshContext';
 
 const MyLibraryPage = () => {
   const [books, setBooks] = useState<UserBook[]>([]);

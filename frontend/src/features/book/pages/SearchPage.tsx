@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import bookService from '../services/bookService';
-import BookCard from '../components/BookCard';
+import BookCard from '../../../components/book/BookCard';
 import type { BookSummary } from '../types/book';
 
 const SearchPage = () => {

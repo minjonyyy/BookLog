@@ -1,5 +1,5 @@
-import apiClient from './api';
-import type { BookDetail } from '../types/book';
+import apiClient from '../../auth/services/api';
+import type { BookDetail } from '../../book/types/book';
 
 export type ReadingStatus = 'WANT_TO_READ' | 'READING' | 'COMPLETED';
 

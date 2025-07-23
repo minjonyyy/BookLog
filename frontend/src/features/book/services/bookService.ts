@@ -1,4 +1,4 @@
-import apiClient from './api';
+import apiClient from '../../auth/services/api';
 import type { BookSearchResponse, BookDetailResponse } from '../types/book';
 
 const searchBooks = async (query: string, page: number = 1, size: number = 10): Promise<BookSearchResponse> => {
