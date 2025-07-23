@@ -8,7 +8,9 @@ import com.example.booklog.common.exception.CustomException;
 import com.example.booklog.common.exception.ErrorCode;
 import com.example.booklog.domain.userbook.repository.UserBookRepository;
 import com.example.booklog.domain.book.service.BookService;
-import com.example.booklog.domain.user.service.UserService;import lombok.RequiredArgsConstructor;
+import com.example.booklog.domain.user.service.UserService;
+import com.example.booklog.domain.review.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ public class UserBookService {
     private final UserBookRepository userBookRepository;
     private final BookService bookService;
     private final UserService userService;
+    private final ReviewRepository reviewRepository;
 
     /**
      * 사용자의 서재에 책 추가
@@ -112,7 +115,16 @@ public class UserBookService {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
 
+        // 연관된 리뷰가 있는지 확인하고 삭제
+        boolean hasReview = reviewRepository.existsByUserIdAndBookId(userId, userBook.getBook().getId());
+        if (hasReview) {
+            log.info("사용자 {}의 책 {} 관련 리뷰를 삭제합니다.", userId, userBook.getBook().getId());
+            reviewRepository.deleteByUserIdAndBookId(userId, userBook.getBook().getId());
+        }
+
+        // UserBook 삭제
         userBookRepository.delete(userBook);
+        log.info("사용자 {}의 서재에서 책 {}을(를) 제거했습니다.", userId, userBook.getBook().getTitle());
     }
 
     /**

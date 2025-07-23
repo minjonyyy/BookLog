@@ -4,6 +4,7 @@ import com.example.booklog.domain.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -35,4 +36,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     
     @Query("SELECT COUNT(r) FROM Review r WHERE r.book.id = :bookId")
     Long countByBookId(Long bookId);
+    
+    // UserBook 삭제 시 관련 리뷰 삭제를 위한 메서드들
+    @Modifying
+    @Query("DELETE FROM Review r WHERE r.user.id = :userId AND r.book.id = :bookId")
+    void deleteByUserIdAndBookId(Long userId, Long bookId);
 } 

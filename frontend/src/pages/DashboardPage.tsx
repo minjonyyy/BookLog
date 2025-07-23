@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import statsService, { UserStats } from '../services/statsService';
 import useAuthStore from '../store/authStore';
+import { useDataRefresh } from '../store/DataRefreshContext';
 
 const DashboardPage = () => {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuthStore();
+  const { refreshTrigger } = useDataRefresh();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -26,7 +28,7 @@ const DashboardPage = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [refreshTrigger]); // refreshTrigger 의존성 추가
 
   if (isLoading) return <LoadingText>로딩 중...</LoadingText>;
   if (error) return <ErrorText>{error}</ErrorText>;
@@ -61,10 +63,10 @@ const DashboardPage = () => {
       <Section>
         <SectionTitle>📝 리뷰 활동</SectionTitle>
         <ReviewStatsGrid>
-          <ReviewStatCard>
+          <ReviewStatCardLink to="/my-reviews">
             <StatNumber>{stats.totalReviews}</StatNumber>
             <StatLabel>작성한 리뷰</StatLabel>
-          </ReviewStatCard>
+          </ReviewStatCardLink>
           <ReviewStatCard>
             <StatNumber>{stats.averageRating.toFixed(1)}</StatNumber>
             <StatLabel>평균 평점</StatLabel>
@@ -93,7 +95,7 @@ const DashboardPage = () => {
         <RecentActivityGrid>
           {stats.currentlyReading && (
             <BookActivityCard>
-              <ActivityLabel>현재 읽고 있는 책</ActivityLabel>
+              <ActivityLabel>최근 읽고 있는 책</ActivityLabel>
               <BookLink to={`/book/${stats.currentlyReading.googleBooksId}`}>
                 <BookImage 
                   src={stats.currentlyReading.thumbnailUrl || 'https://via.placeholder.com/60x80?text=No+Image'} 
@@ -125,18 +127,7 @@ const DashboardPage = () => {
         </RecentActivityGrid>
       </Section>
 
-      {/* 빠른 액션 */}
-      <Section>
-        <SectionTitle>🚀 빠른 액션</SectionTitle>
-        <QuickActionGrid>
-          <QuickActionButton to="/search">
-            📚 책 검색하기
-          </QuickActionButton>
-          <QuickActionButton to="/library">
-            📖 내 서재 보기
-          </QuickActionButton>
-        </QuickActionGrid>
-      </Section>
+      
     </Container>
   );
 };
@@ -150,15 +141,16 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 1rem;
   text-align: center;
+  color: #2d3748;
 `;
 
 const WelcomeMessage = styled.p`
   font-size: 1.2rem;
   text-align: center;
-  color: #666;
+  color: #4a5568;
   margin-bottom: 2rem;
 `;
 
@@ -170,12 +162,18 @@ const StatsGrid = styled.div`
 `;
 
 const StatCard = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   color: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+  }
 `;
 
 const StatNumber = styled.div`
@@ -195,9 +193,9 @@ const Section = styled.div`
 
 const SectionTitle = styled.h2`
   font-size: 1.8rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: #2d3748;
 `;
 
 const ReviewStatsGrid = styled.div`
@@ -207,12 +205,35 @@ const ReviewStatsGrid = styled.div`
 `;
 
 const ReviewStatCard = styled.div`
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: #38b2ac;
   color: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(56, 178, 172, 0.15);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(56, 178, 172, 0.2);
+  }
+`;
+
+const ReviewStatCardLink = styled(Link)`
+  background: #38b2ac;
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(56, 178, 172, 0.15);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(56, 178, 172, 0.2);
+  }
 `;
 
 const ProgressSection = styled.div`
@@ -222,12 +243,18 @@ const ProgressSection = styled.div`
 `;
 
 const ProgressStat = styled.div`
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #4299e1;
   color: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.15);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(66, 153, 225, 0.2);
+  }
 `;
 
 const RecentActivityGrid = styled.div`
@@ -238,17 +265,23 @@ const RecentActivityGrid = styled.div`
 
 const BookActivityCard = styled.div`
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
 `;
 
 const ActivityLabel = styled.div`
   font-size: 0.9rem;
-  color: #666;
+  color: #4a5568;
   margin-bottom: 1rem;
-  font-weight: 500;
+  font-weight: 600;
 `;
 
 const BookLink = styled(Link)`
@@ -275,13 +308,13 @@ const BookInfo = styled.div`
 `;
 
 const BookTitle = styled.div`
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #333;
+  color: #2d3748;
 `;
 
 const BookAuthor = styled.div`
-  color: #666;
+  color: #4a5568;
   font-size: 0.9rem;
 `;
 
@@ -291,35 +324,24 @@ const QuickActionGrid = styled.div`
   gap: 1rem;
 `;
 
-const QuickActionButton = styled(Link)`
-  display: block;
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-  color: #333;
-  padding: 1.5rem;
-  border-radius: 12px;
-  text-align: center;
-  text-decoration: none;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
 
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
 
 const LoadingText = styled.p`
   text-align: center;
   font-size: 1.2rem;
-  color: #666;
+  color: #4a5568;
   margin-top: 2rem;
 `;
 
 const ErrorText = styled.p`
   text-align: center;
-  color: #dc3545;
+  color: #e53e3e;
   font-size: 1.1rem;
   margin-top: 2rem;
+  padding: 1rem;
+  background: #fed7d7;
+  border-radius: 12px;
+  border: 1px solid #feb2b2;
 `;
 
 export default DashboardPage; 

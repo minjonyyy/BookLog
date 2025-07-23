@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -63,18 +65,49 @@ public class StatsService {
      * 전체 읽기 진행률 계산
      */
     private Double calculateOverallProgress(Long userId) {
-        // 읽는 중인 책들의 평균 진행률을 계산
-        // 실제로는 복잡한 로직이 필요하지만, 여기서는 간단하게 구현
-        return 65.5; // 임시값
+        // 읽는 중인 책들의 진행률을 계산
+        List<UserBook> readingBooks = userBookRepository.findByUserIdAndStatus(userId, UserBook.ReadingStatus.READING);
+        
+        if (readingBooks.isEmpty()) {
+            return 0.0;
+        }
+        
+        double totalProgress = 0.0;
+        int validBooks = 0;
+        
+        for (UserBook userBook : readingBooks) {
+            if (userBook.getBook().getPageCount() != null && userBook.getBook().getPageCount() > 0) {
+                double progress = (double) userBook.getCurrentPage() / userBook.getBook().getPageCount() * 100;
+                totalProgress += progress;
+                validBooks++;
+            }
+        }
+        
+        return validBooks > 0 ? totalProgress / validBooks : 0.0;
     }
 
     /**
      * 최근 완독한 책 정보 조회
      */
     private UserBookResponse.BookInfo getLastCompletedBook(Long userId) {
-        // 최근 완독한 책 조회
-        // 실제로는 Repository에서 조회해야 하지만, 여기서는 null 반환
-        return null;
+        // 최근 완독한 책 조회 (completedAt 기준으로 정렬)
+        List<UserBook> completedBooks = userBookRepository.findByUserIdAndStatusOrderByCompletedAtDesc(
+            userId, UserBook.ReadingStatus.COMPLETED
+        );
+        
+        if (completedBooks.isEmpty()) {
+            return null;
+        }
+        
+        UserBook lastCompleted = completedBooks.get(0);
+        return UserBookResponse.BookInfo.builder()
+                .id(lastCompleted.getBook().getId())
+                .googleBooksId(lastCompleted.getBook().getGoogleBooksId())
+                .title(lastCompleted.getBook().getTitle())
+                .authors(lastCompleted.getBook().getAuthors())
+                .thumbnailUrl(lastCompleted.getBook().getThumbnailUrl())
+                .pageCount(lastCompleted.getBook().getPageCount())
+                .build();
     }
 
     /**
@@ -82,7 +115,22 @@ public class StatsService {
      */
     private UserBookResponse.BookInfo getCurrentlyReadingBook(Long userId) {
         // 현재 읽고 있는 책 중 가장 최근에 업데이트된 책 조회
-        // 실제로는 Repository에서 조회해야 하지만, 여기서는 null 반환
-        return null;
+        List<UserBook> readingBooks = userBookRepository.findByUserIdAndStatusOrderByUpdatedAtDesc(
+            userId, UserBook.ReadingStatus.READING
+        );
+        
+        if (readingBooks.isEmpty()) {
+            return null;
+        }
+        
+        UserBook currentReading = readingBooks.get(0);
+        return UserBookResponse.BookInfo.builder()
+                .id(currentReading.getBook().getId())
+                .googleBooksId(currentReading.getBook().getGoogleBooksId())
+                .title(currentReading.getBook().getTitle())
+                .authors(currentReading.getBook().getAuthors())
+                .thumbnailUrl(currentReading.getBook().getThumbnailUrl())
+                .pageCount(currentReading.getBook().getPageCount())
+                .build();
     }
 } 

@@ -33,4 +33,10 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
     
     @Query("SELECT SUM(ub.currentPage) FROM UserBook ub WHERE ub.user.id = :userId AND ub.status = 'COMPLETED'")
     Long sumCompletedPagesByUserId(Long userId);
+    
+    // 최근 완독한 책 조회 (완독일 기준 내림차순)
+    List<UserBook> findByUserIdAndStatusOrderByCompletedAtDesc(Long userId, ReadingStatus status);
+    
+    // 현재 읽는 중인 책 조회 (업데이트일 기준 내림차순)  
+    List<UserBook> findByUserIdAndStatusOrderByUpdatedAtDesc(Long userId, ReadingStatus status);
 } 

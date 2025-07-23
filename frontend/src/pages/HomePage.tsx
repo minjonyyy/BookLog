@@ -30,14 +30,6 @@ const HomePage = () => {
     }
   };
 
-  const popularBooks = [
-    { title: "데이터 과학", category: "📊 데이터" },
-    { title: "자바스크립트", category: "💻 프로그래밍" },
-    { title: "마케팅", category: "📈 비즈니스" },
-    { title: "심리학", category: "🧠 심리" },
-    { title: "역사", category: "📜 역사" },
-    { title: "철학", category: "🤔 철학" },
-  ];
 
   return (
     <Container>
@@ -160,15 +152,29 @@ const Container = styled.div`
 `;
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #2d3748;
   padding: 4rem 2rem;
   text-align: center;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    pointer-events: none;
+  }
 `;
 
 const HeroContent = styled.div`
   max-width: 800px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 `;
 
 const Title = styled.h1`
@@ -184,7 +190,8 @@ const Title = styled.h1`
 const Subtitle = styled.p`
   font-size: 1.3rem;
   margin-bottom: 3rem;
-  opacity: 0.9;
+  color: #4a5568;
+  font-weight: 400;
   
   @media (max-width: 768px) {
     font-size: 1.1rem;
@@ -210,33 +217,45 @@ const SearchInput = styled.input`
   flex: 1;
   padding: 1rem 1.5rem;
   font-size: 1.1rem;
-  border: none;
-  border-radius: 50px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   outline: none;
+  transition: all 0.2s ease;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
   
   &::placeholder {
-    color: #999;
+    color: #a0aec0;
   }
 `;
 
 const SearchButton = styled.button`
   padding: 1rem 2rem;
   font-size: 1.1rem;
-  background: #fff;
-  color: #667eea;
+  background: #667eea;
+  color: white;
   border: none;
-  border-radius: 50px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: bold;
-  transition: transform 0.2s;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
   
   &:hover:not(:disabled) {
+    background: #5a67d8;
     transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
   }
   
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -261,8 +280,8 @@ const QuickActions = styled.div`
 const QuickActionButton = styled.button`
   padding: 0.75rem 1.5rem;
   background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: black;
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 25px;
   cursor: pointer;
   font-weight: 500;
@@ -291,10 +310,10 @@ const SearchResultsSection = styled.section`
 
 const SectionTitle = styled.h2`
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 2rem;
   text-align: center;
-  color: #333;
+  color: #2d3748;
 `;
 
 const ResultsGrid = styled.div`
@@ -315,7 +334,7 @@ const NoResults = styled.div`
 
 const PopularSection = styled.section`
   padding: 3rem 2rem;
-  background: #f8f9fa;
+  background: #f8fafc;
   max-width: 1200px;
   margin: 0 auto;
 `;
@@ -329,26 +348,31 @@ const PopularGrid = styled.div`
 const PopularItem = styled.div`
   background: white;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: transform 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
   
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
   }
   
   .category {
     display: block;
     font-size: 0.9rem;
-    color: #666;
+    color: #667eea;
     margin-bottom: 0.5rem;
+    font-weight: 500;
   }
   
   .title {
     display: block;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1.1rem;
   }
 `;
 
@@ -360,33 +384,55 @@ const FeaturesSection = styled.section`
 
 const FeaturesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 `;
 
 const FeatureCard = styled.div`
   text-align: center;
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 const FeatureIcon = styled.div`
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+  filter: grayscale(30%);
 `;
 
 const FeatureTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
 `;
 
 const FeatureDescription = styled.p`
-  color: #666;
+  color: #4a5568;
   line-height: 1.6;
+  font-size: 0.9rem;
 `;
 
-export default HomePage; 
+export default HomePage;
