@@ -1,4 +1,4 @@
-import apiClient from '../features/auth/services/api';
+import apiClient from '../../auth/services/api';
 
 export interface Review {
   id: number;

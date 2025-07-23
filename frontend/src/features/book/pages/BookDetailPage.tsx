@@ -6,7 +6,7 @@ import type { BookDetail } from '../types/book';
 import AddBookToLibraryModal from '../../../components/common/AddBookToLibraryModal';
 import ReviewForm from '../../../components/review/ReviewForm';
 import useAuthStore from '../../auth/store/authStore';
-import reviewService, { Review } from '../../../services/reviewService';
+import reviewService, { Review } from '../../user/services/reviewService';
 import ReviewList from '../../../components/review/ReviewList';
 import userBookService, { ReadingStatus, UserBook } from '../../user/services/userBookService';
 

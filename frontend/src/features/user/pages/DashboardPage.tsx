@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import statsService, { UserStats } from '../../../services/statsService';
+import statsService, { UserStats } from '../services/statsService';
 import useAuthStore from '../../auth/store/authStore';
 import { useDataRefresh } from '../../common/store/DataRefreshContext';
 

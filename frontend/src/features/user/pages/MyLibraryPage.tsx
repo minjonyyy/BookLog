@@ -6,7 +6,7 @@ import BookCard from '../../../components/book/BookCard';
 import Modal from '../../../components/common/Modal';
 import ReviewForm from '../../../components/review/ReviewForm';
 import ConfirmModal from '../../../components/common/ConfirmModal';
-import reviewService from '../../../services/reviewService';
+import reviewService from '../services/reviewService';
 import { useDataRefresh } from '../../common/store/DataRefreshContext';
 
 const MyLibraryPage = () => {
